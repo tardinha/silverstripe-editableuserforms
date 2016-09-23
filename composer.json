@@ -11,7 +11,7 @@
 		}
 	],
 	"require": {
-		"silverstripe/userforms": "~4.0",
+		"silverstripe/userforms": "~3.0",
 		"unclecheese/dropzone": "dev-master"
 	},
 	"extra": {
