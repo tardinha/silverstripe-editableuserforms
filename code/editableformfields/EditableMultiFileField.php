@@ -2,39 +2,41 @@
 
 class EditableMultiFileField extends EditableFormField
 {
-    private static $singular_name = 'Multi File Upload Field';
+    private static $singular_name = 'Multiple file upload field';
 
-    private static $plural_name = 'Multi File Upload Fields';
+    private static $plural_name = 'Multiple file upload fields';
 
-    public function Icon()
+    private static $db = array(
+        'AllowMultipleUploads' => 'Boolean',
+    );
+
+    private static $defaults = array(
+        'AllowMultipleUploads' => 1,
+    );
+
+    private static $has_one = array(
+        'Folder' => 'Folder'
+    );
+
+    public function getIcon()
     {
-        return 'userforms/images/editablefilefield.png';
+        return USERFORMS_DIR . '/images/editablefilefield.png';
     }
 
-    public function getFieldConfiguration()
+    public function getCmsFields()
     {
-        $fields = parent::getFieldConfiguration();
+        $fields = parent::getCmsFields();
 
-        $folder = ($this->getSetting('Folder')) ? $this->getSetting('Folder') : null;
-
-        $tree = UserformsTreeDropdownField::create(
-            $this->getSettingName("Folder"),
+        $folder = $this->Folder();
+        $treeField = UserformsTreeDropdownField::create(
+            'FolderID',
             _t('EditableUploadField.SELECTUPLOADFOLDER', 'Select upload folder'),
             "Folder"
         );
+        $treeField->setValue($folder);
+        $fields->addFieldToTab('Root.Main', $treeField);
 
-        $tree->setValue($folder);
-        $fields->push($tree);
-
-        $randomise = ($this->getSetting('Obfuscate')) ? $this->getSetting('Obfuscate') : null;
-        $cb = CheckboxField::create($this->getSettingName('Obfuscate'), 'Obfuscate upload folder - provides some hiding of uploaded files', $randomise);
-        $fields->push($cb);
-
-        $multiple = $this->getSetting('MultipleUploads');
-        $cb = CheckboxField::create($this->getSettingName("MultipleUploads"), 'Allow multiple uploads');
-        $cb->setValue($multiple ? true : false);
-
-        $fields->push($cb);
+        $fields->addFieldToTab('Root.Main', CheckboxField::create($this->getSettingName("AllowMultipleUploads"), 'Allow multiple uploads'));
 
         return $fields;
     }
@@ -43,25 +45,14 @@ class EditableMultiFileField extends EditableFormField
     {
         $field = FileAttachmentField::create($this->Name, $this->Title);
 
-//		$field = FileField::create($this->Name, $this->Title);
-
-        if ($this->getSetting('Folder')) {
-            $folder = Folder::get()->byId($this->getSetting('Folder'));
-
-            if ($folder) {
-                $field->setFolderName(
-                    preg_replace("/^assets\//", "", $folder->Filename)
-                );
-            }
+        $folder = $this->Folder();
+        if(!empty($folder->ID)) {
+            $field->setFolderName(
+                preg_replace("/^assets\//", "", $folder->Filename)
+            );
         }
 
-        if ($this->getSetting('Obfuscate')) {
-            $folder = rtrim($field->getFolderName(), '/');
-            $folder .= '/' . md5(time() + mt_rand());
-            $field->setFolderName($folder);
-        }
-
-        if ($this->getSetting('MultipleUploads')) {
+        if ($this->MultipleUploads == 1) {
             $field->setMultiple(true);
         }
 
@@ -76,20 +67,4 @@ class EditableMultiFileField extends EditableFormField
         return $field;
     }
 
-    /**
-     * Return the value for the database, link to the file is stored as a
-     * relation so value for the field can be null.
-     *
-     * @return string
-     */
-    public function getValueFromData($data)
-    {
-        $val = isset($data[$this->Name]) ? $data[$this->Name] : null;
-        return is_array($val) ? implode(',', $val) : $val;
-    }
-
-    public function getSubmittedFormField()
-    {
-        return new SubmittedMultiFileField();
-    }
 }

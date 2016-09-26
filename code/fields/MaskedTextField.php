@@ -8,6 +8,8 @@
 class MaskedTextField extends TextField
 {
 
+    private $default_classes = array('text');
+
     /**
      * A Mask used for describing how the form should appear
      *
@@ -24,9 +26,8 @@ class MaskedTextField extends TextField
     /**
      * Returns an input field, class="text" and type="text" with an optional maxlength
      */
-    public function __construct($name, $title = null, $value = "", $mask = '', $maxLength = null, $form = null)
+    public function __construct($name, $title = null, $value = "", $maxLength = null, $form = null)
     {
-        $this->inputMask = $mask;
         parent::__construct($name, $title, $value, $maxLength, $form);
     }
 
@@ -42,10 +43,12 @@ class MaskedTextField extends TextField
 
     public function Field($properties = array())
     {
+        $this->addExtraClass('text');
+
         $tag = parent::Field($properties);
 
         // add in the logic for the masking
-        Requirements::javascript('editableuserforms/javascript/jquery.maskedinput-1.4.1.min.js');
+        Requirements::javascript('editableuserforms/javascript/jquery.maskedinput-1.4.1.js');
         $id = $this->id();
         $mask = $this->inputMask;
         $js = <<<JS

@@ -8,34 +8,50 @@
 class EditableMaskedTextField extends EditableTextFieldWithDefault
 {
 
-    public static $singular_name = 'Masked Text field';
-    public static $plural_name = 'Masked Text fields';
+    private static $singular_name = 'Text field with an input mask';
+    private static $plural_name = 'Text fields with an input mask';
 
-    public function Icon()
+    private static $defaults = array(
+		'TextMask' => ''
+	);
+
+    private static $db = array(
+        'TextMask' => 'Varchar(255)',
+    );
+
+    public function getIcon()
     {
-        return 'editableuserforms/images/maskedtextfield.png';
+        return USERFORMS_DIR . '/images/maskedtextfield.png';
     }
 
-    public function getFieldConfiguration()
+    private function getMaskedTextField() {
+        $field = new MaskedTextField('TextMask', _t('EditableMaskedTextFieldWithDefault.MASK', 'Mask'));
+        $field->setInputMask($this->TextMask);
+
+        singleton('DefaultEditableFieldHelper')->updateFormField($this, $field);
+
+        return $field;
+    }
+
+    public function getCMSFields()
     {
-        $fields = parent::getFieldConfiguration();
-        // eventually replace hard-coded "Fields"?
-        $baseName = "Fields[$this->ID]";
+        $fields = parent::getCMSFields();
 
-        $mask = $this->getSetting('TextMask');
+        $maskedTextField = $this->getMaskedTextField();
+        $maskedTextFieldLabel = new LiteralField('MaskInstructions', _t('EditableMaskedTextFieldWithDefault.MASK_INSTRUCTIONS', '<p>Example: 99/99/9999</p>'
+                                                                        . '<ul>'
+                                                                        . '<li>a - Represents an alpha character (A-Z,a-z)</li>'
+                                                                        . '<li>9 - Represents a numeric character (0-9)</li>'
+                                                                        . '<li>* - Represents an alphanumeric character (A-Z,a-z,0-9)</li>'
+                                                                        . '</ul>'));
+        $fields->addFieldsToTab('Root.Main', CompositeField::create( array($maskedTextField, $maskedTextFieldLabel) ));
 
-        $extraFields = new FieldList(
-            new TextField($baseName . "[CustomSettings][TextMask]", _t('EditableMaskedTextFieldWithDefault.MASK', 'Mask'), $mask), new LiteralField('MaskInstructions', _t('EditableMaskedTextFieldWithDefault.MASK_INSTRUCTIONS', 'Example: 99/99/9999 <ul><li>a - Represents an alpha character (A-Z,a-z)</li><li>9 - Represents a numeric character (0-9)</li><li>* - Represents an alphanumeric character (A-Z,a-z,0-9)</li></ul>'))
-        );
-
-        $fields->merge($extraFields);
         return $fields;
     }
 
     public function getFormField()
     {
-        $field = MaskedTextField::create($this->Name, $this->Title, null, $this->getSetting('TextMask'), $this->getSetting('MaxLength'));
-
+        $field = $this->getMaskedTextField();
         if ($this->Required) {
             // Required validation can conflict so add the Required validation messages
             // as input attributes
@@ -44,6 +60,7 @@ class EditableMaskedTextField extends EditableTextFieldWithDefault
             $field->setAttribute('data-msg-required', $errorMessage);
         }
 
-        return singleton('DefaultEditableFieldHelper')->updateFormField($this, $field);
+        singleton('DefaultEditableFieldHelper')->updateFormField($this, $field);
+        return $field;
     }
 }

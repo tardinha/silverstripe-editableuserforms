@@ -1,25 +1,23 @@
 <?php
 
 /**
- * An email field that allows a user to specify a default value
+ * An email field that allows a CMS Editor to specify a default value
  *
  * @author Marcus Nyeholt <marcus@silverstripe.com.au>
  */
 class EditableEmailFieldWithDefault extends EditableEmailField
 {
-    public static $singular_name = 'Email field with default';
+    private static $singular_name = 'Email field with keyword default';
+    private static $plural_name = 'Email fields with keyword default';
 
-    public static $plural_name = 'Email fields with default';
-
-    public function Icon()
+    public function getIcon()
     {
-        return 'userforms/images/editableemailfield.png';
+        return USERFORMS_DIR . '/images/editableemailfield.png';
     }
 
-    public function getFieldConfiguration()
+    public function getCMSFields()
     {
-        $fields = parent::getFieldConfiguration();
-        singleton('DefaultEditableFieldHelper')->updateFieldConfiguration($this, $fields);
+        $fields = parent::getCMSFields();
         return $fields;
     }
 
@@ -27,6 +25,7 @@ class EditableEmailFieldWithDefault extends EditableEmailField
     {
         $field = parent::getFormField();
         $field->setValue(null);
-        return singleton('DefaultEditableFieldHelper')->updateFormField($this, $field);
+        singleton('DefaultEditableFieldHelper')->updateFormField($this, $field);
+        return $field;
     }
 }

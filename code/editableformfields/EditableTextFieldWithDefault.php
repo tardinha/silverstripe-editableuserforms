@@ -1,32 +1,32 @@
 <?php
 
 /**
- * A text field that allows a user to specify a default value
+ * A text field that allows a CMS Editor to specify a default value
  *
  * @author Marcus Nyeholt <marcus@silverstripe.com.au>
  */
 class EditableTextFieldWithDefault extends EditableTextField
 {
 
-    public static $singular_name = 'Text field with keyword default';
-    public static $plural_name = 'Text fields with keyword default';
+    private static $singular_name = 'Text field with keyword default';
+    private static $plural_name = 'Text fields with keyword default';
 
-    public function Icon()
+    public function getIcon()
     {
-        return 'userforms/images/editabletextfield.png';
+        return USERFORMS_DIR . '/images/editabletextfield.png';
     }
 
-    public function getFieldConfiguration()
+    public function getCMSFields()
     {
-        $fields = parent::getFieldConfiguration();
-        // eventually replace hard-coded "Fields"?
-        singleton('DefaultEditableFieldHelper')->updateFieldConfiguration($this, $fields);
+        $fields = parent::getCMSFields();
         return $fields;
     }
 
     public function getFormField()
     {
         $field = parent::getFormField();
-        return singleton('DefaultEditableFieldHelper')->updateFormField($this, $field);
+        $field->setValue(null);
+        singleton('DefaultEditableFieldHelper')->updateFormField($this, $field);
+        return $field;
     }
 }

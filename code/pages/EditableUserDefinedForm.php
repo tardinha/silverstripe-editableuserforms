@@ -660,7 +660,7 @@ class EditableUserDefinedForm_Controller extends UserDefinedForm_Controller
 
         // email users on submit.
         if ($recipients = $this->FilteredEmailRecipients($data, $form)) {
-            $email = new UserDefinedForm_SubmittedFormEmail($submittedFields);
+            $email = new UserFormRecipientEmail($submittedFields);
 
             if ($attachments) {
                 foreach ($attachments as $file) {
