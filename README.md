@@ -4,7 +4,7 @@ Allows users to re-edit submissions made from a userdefined form.
 
 ## Requirement
 
-* SilverStripe 3.1.X
+* SilverStripe >= 3.1.x
 * [Userforms](https://github.com/silverstripe/silverstripe-userforms)
 * [Dropzone](https://github.com/unclecheese/silverstripe-dropzone) for file uploads
 
