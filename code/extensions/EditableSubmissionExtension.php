@@ -21,6 +21,8 @@ class EditableSubmissionExtension extends DataExtension
         'SubmissionStatus'        => 'Draft',
     );
 
+    protected $labelledFieldMap;
+
     public function exposeDataFields($inForm = null)
     {
         foreach ($this->owner->Values() as $submittedField) {
@@ -43,9 +45,6 @@ class EditableSubmissionExtension extends DataExtension
 //			}
         }
     }
-
-
-    protected $labelledFieldMap;
 
     public function fieldByLabel($label)
     {

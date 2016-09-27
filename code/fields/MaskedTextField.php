@@ -23,12 +23,19 @@ class MaskedTextField extends TextField
      */
     protected $inputMask;
 
+    protected $inCMS = FALSE;
+
     /**
-     * Returns an input field, class="text" and type="text" with an optional maxlength
+     * @todo I'm sure there is a nicer way to do this, we want to stop the jQuery being implemented in the CMS
      */
-    public function __construct($name, $title = null, $value = "", $maxLength = null, $form = null)
+    public function setInCms($in)
     {
-        parent::__construct($name, $title, $value, $maxLength, $form);
+        $this->inCMS = $in;
+    }
+
+    public function getInCms()
+    {
+        return $this->inCMS;
     }
 
     /**
@@ -41,24 +48,33 @@ class MaskedTextField extends TextField
         $this->inputMask = $mask;
     }
 
+    public function getInputMask()
+    {
+        return $this->inputMask;
+    }
+
     public function Field($properties = array())
     {
+        // ensure the text class is present
         $this->addExtraClass('text');
 
         $tag = parent::Field($properties);
 
-        // add in the logic for the masking
-        Requirements::javascript('editableuserforms/javascript/jquery.maskedinput-1.4.1.js');
-        $id = $this->id();
-        $mask = $this->inputMask;
-        $js = <<<JS
+        if(!$this->getInCms()) {
+            // add in the logic for the masking
+            Requirements::javascript('editableuserforms/javascript/jquery.maskedinput-1.4.1.min.js');
+            $id = $this->id();
+            $mask = addslashes($this->inputMask);
+            $js = <<<JS
 (function ($) {
 	$().ready(function () {
 		$('#$id').mask('$mask');
 	});
 })(jQuery);
 JS;
-        Requirements::customScript($js, $id . 'JS');
+            Requirements::customScript($js, $id . 'JS');
+        }
+
         return $tag;
     }
 }

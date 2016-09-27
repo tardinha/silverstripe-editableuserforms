@@ -21,31 +21,28 @@ class EditableMaskedTextField extends EditableTextFieldWithDefault
 
     public function getIcon()
     {
-        return USERFORMS_DIR . '/images/maskedtextfield.png';
+        return 'editableuserforms/images/maskedtextfield.png';
     }
 
     private function getMaskedTextField() {
-        $field = new MaskedTextField('TextMask', _t('EditableMaskedTextFieldWithDefault.MASK', 'Mask'));
+        $field = MaskedTextField::create('TextMask', _t('EditableMaskedTextFieldWithDefault.MASK', 'Mask'));
         $field->setInputMask($this->TextMask);
-
-        singleton('DefaultEditableFieldHelper')->updateFormField($this, $field);
-
         return $field;
     }
 
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-
         $maskedTextField = $this->getMaskedTextField();
-        $maskedTextFieldLabel = new LiteralField('MaskInstructions', _t('EditableMaskedTextFieldWithDefault.MASK_INSTRUCTIONS', '<p>Example: 99/99/9999</p>'
+        $maskedTextField->setInCms(TRUE);
+        $maskedTextFieldLabel = new LiteralField('MaskInstructions', _t('EditableMaskedTextFieldWithDefault.MASK_INSTRUCTIONS', '<p>You must use the following characters:</p>'
                                                                         . '<ul>'
                                                                         . '<li>a - Represents an alpha character (A-Z,a-z)</li>'
                                                                         . '<li>9 - Represents a numeric character (0-9)</li>'
                                                                         . '<li>* - Represents an alphanumeric character (A-Z,a-z,0-9)</li>'
-                                                                        . '</ul>'));
+                                                                        . '</ul>'
+                                                                        . '<p>Example: 99/99/9999 for dates, aaa for a 3 letter code</p>'));
         $fields->addFieldsToTab('Root.Main', CompositeField::create( array($maskedTextField, $maskedTextFieldLabel) ));
-
         return $fields;
     }
 
@@ -59,8 +56,6 @@ class EditableMaskedTextField extends EditableTextFieldWithDefault
             $field->setAttribute('data-rule-required', 'true');
             $field->setAttribute('data-msg-required', $errorMessage);
         }
-
-        singleton('DefaultEditableFieldHelper')->updateFormField($this, $field);
         return $field;
     }
 }

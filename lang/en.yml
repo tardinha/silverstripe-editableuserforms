@@ -7,7 +7,7 @@ en:
     SINGULARNAME: 'Masked Text field'
   EditableMaskedTextFieldWithDefault:
     MASK: Mask
-    MASK_INSTRUCTIONS: 'Example: 99/99/9999 <ul><li>a - Represents an alpha character (A-Z,a-z)</li><li>9 - Represents a numeric character (0-9)</li><li>* - Represents an alphanumeric character (A-Z,a-z,0-9)</li></ul>'
+    MASK_INSTRUCTIONS: '<p>You must use the following characters:</p><ul><li>a - Represents an alpha character (A-Z,a-z)</li><li>9 - Represents a numeric character (0-9)</li><li>* - Represents an alphanumeric character (A-Z,a-z,0-9)</li></ul><p>Example: 99/99/9999 for dates, aaa for a 3 letter code</p>'
   EditableMultiFileField:
     PLURALNAME: 'Multi File Upload Fields'
     SINGULARNAME: 'Multi File Upload Field'

@@ -9,10 +9,10 @@
 class FormSaveField extends EditableFormField
 {
 
-    public static $singular_name = 'Save button';
-    public static $plural_name = 'Save buttons';
+    private static $singular_name = 'Save button';
+    private static $plural_name = 'Save buttons';
 
-    public function Icon()
+    public function getIcon()
     {
         return 'editableuserforms/images/formsavefield.png';
     }
