@@ -24,8 +24,8 @@ class EditableMaskedTextField extends EditableTextFieldWithDefault
         return 'editableuserforms/images/maskedtextfield.png';
     }
 
-    private function getMaskedTextField() {
-        $field = MaskedTextField::create('TextMask', _t('EditableMaskedTextFieldWithDefault.MASK', 'Mask'));
+    private function getMaskedTextField($name) {
+        $field = MaskedTextField::create( $name, _t('EditableMaskedTextFieldWithDefault.MASK', 'Mask'));
         $field->setInputMask($this->TextMask);
         return $field;
     }
@@ -33,7 +33,7 @@ class EditableMaskedTextField extends EditableTextFieldWithDefault
     public function getCMSFields()
     {
         $fields = parent::getCMSFields();
-        $maskedTextField = $this->getMaskedTextField();
+        $maskedTextField = $this->getMaskedTextField('TextMask');
         $maskedTextField->setInCms(TRUE);
         $maskedTextFieldLabel = new LiteralField('MaskInstructions', _t('EditableMaskedTextFieldWithDefault.MASK_INSTRUCTIONS', '<p>You must use the following characters:</p>'
                                                                         . '<ul>'
@@ -48,7 +48,7 @@ class EditableMaskedTextField extends EditableTextFieldWithDefault
 
     public function getFormField()
     {
-        $field = $this->getMaskedTextField();
+        $field = $this->getMaskedTextField( $this->Name );
         if ($this->Required) {
             // Required validation can conflict so add the Required validation messages
             // as input attributes
