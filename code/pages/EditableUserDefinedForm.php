@@ -461,6 +461,8 @@ class EditableUserDefinedForm_Controller extends UserDefinedForm_Controller
 
 
     /**
+     * Handles submission of the form (not a draft save)
+     *
      * Need to override the whole process method to be able to catch the fact
      * that we might be editing a resumed entry
      *
@@ -497,8 +499,8 @@ class EditableUserDefinedForm_Controller extends UserDefinedForm_Controller
             return;
         }
 
-
-        $submission = $this->processSubmission($data, $form);
+        // for process action, send the recipient email as well, which is off by default
+        $submission = $this->processSubmission($data, $form, TRUE);
         if ($submission) {
             if ($this->data()->WorkflowID) {
                 $submission->SubmissionStatus = EditableUserDefinedForm::PENDING;
@@ -545,7 +547,7 @@ class EditableUserDefinedForm_Controller extends UserDefinedForm_Controller
      *
      * This has been overridden to be able to re-edit existing form submissions
      */
-    protected function processSubmission($data, $form)
+    protected function processSubmission($data, $form, $sendRecipientEmail = FALSE)
     {
         $submittedForm = SubmittedForm::create();
 
@@ -659,7 +661,7 @@ class EditableUserDefinedForm_Controller extends UserDefinedForm_Controller
         $this->extend('updateEmailData', $emailData, $attachments);
 
         // email users on submit.
-        if ($recipients = $this->FilteredEmailRecipients($data, $form)) {
+        if ($sendRecipientEmail && ($recipients = $this->FilteredEmailRecipients($data, $form))) {
             $email = new UserFormRecipientEmail($submittedFields);
 
             if ($attachments) {
@@ -728,7 +730,7 @@ class EditableUserDefinedForm_Controller extends UserDefinedForm_Controller
                     $email->send();
                 }
             }
-        }
+        } //email
 
         $submittedForm->extend('updateAfterProcess');
 
