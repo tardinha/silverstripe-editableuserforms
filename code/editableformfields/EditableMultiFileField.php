@@ -43,7 +43,7 @@ class EditableMultiFileField extends EditableFormField
         $treeField->setValue($folder);
         $fields->addFieldToTab('Root.Main', $treeField);
         $fields->addFieldToTab('Root.Main', CheckboxField::create("AllowMultipleUploads", "Allow multiple uploads"));
-        $fields->addFieldToTab('Root.Main', NumericField::create("ParallelUploads", "Number of files to upload in parallel (if multiple uploads enabled)"));
+        $fields->addFieldToTab('Root.Main', NumericField::create("ParallelUploads", "Allow parallel uploads (if multiple uploads enabled)"));
         $fields->addFieldToTab('Root.Main', TextField::create('AllowedFileExtensions','Allowed File Extensions e.g ".gif, .jpg"'));
         $fields->addFieldToTab('Root.Main', CheckboxField::create("ImagesOnly", "Allow only images"));
 
