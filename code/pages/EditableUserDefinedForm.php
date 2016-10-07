@@ -479,7 +479,7 @@ class EditableUserDefinedForm_Controller extends UserDefinedForm_Controller
             $messages[$field->Name] = $field->getErrorMessage()->HTML();
             $formField = $field->getFormField();
 
-            if ($field->Required && $field->CustomRules()->Count() == 0) {
+            if ($field->Required && $field->DisplayRules()->Count() == 0) {
                 if (isset($data[$field->Name])) {
                     $formField->setValue($data[$field->Name]);
                 }
