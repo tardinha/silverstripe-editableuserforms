@@ -11,8 +11,8 @@
 		}
 	],
 	"require": {
-		"silverstripe/userforms": "^3.0",
-		"unclecheese/dropzone": "dev-master"
+		"silverstripe/userforms": "*",
+		"unclecheese/dropzone": "*"
 	},
 	"extra": {
 		"branch-alias": {
